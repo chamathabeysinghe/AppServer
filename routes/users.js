@@ -1,20 +1,29 @@
 var express = require('express');
 var router = express.Router();
 var User = require('../models/User');
-var bcrypt = require('bcryptjs');
 
-
-/* GET users listing. */
 router.get('/find', function (req, res, next) {
     User.find(req.query).exec(function (err, users) {
+        if(err){
+            return res.json({success:false,error:err});
+        }
         res.json(users)
+    });
+});
+
+router.get('/last-updated/:id',function (req, res, next) {
+    User.findById(req.params.id,function (err, user) {
+        if(err){
+            return res.json({success:false,error:err});
+        }
+        return res.json(user.lastUpdate);
     })
 });
 
 router.post('/register-school', function (req, res, next) {
     saveUser(req.body.userName, req.body.password, 'school', req.body.name, req.body.phone, req.body.address, req.body.picture, function (result) {
         res.json(result)
-    });;
+    });
 });
 
 router.post('/register-instructor', function (req, res, next) {
@@ -63,7 +72,6 @@ function saveUser(userName, password, role, name, phone, address, picture, callb
             callback(result)
         }
     })
-
 }
 
 function assignUserToSchool(userId, schoolId, callback) {
@@ -81,7 +89,7 @@ function assignUserToSchool(userId, schoolId, callback) {
             result = {success: true, msg: 'Assign school to user'};
             return callback(result);
         })
-    })
+    });
 }
 
 

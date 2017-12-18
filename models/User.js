@@ -35,11 +35,16 @@ var UserSchema = new Schema({
     _school: {
         type: Schema.Types.ObjectId,
         ref: 'User'
+    },
+    lastUpdate: {
+        type: Date,
+        default: Date.now
     }
 });
 
 UserSchema.pre('save',function (next) {
     var user = this;
+    user.lastUpdate = Date.now();
     if(this.isModified('password')||this.isNew){
         user.password = bcrypt.hashSync(user.password,8);
         next();
