@@ -1,6 +1,8 @@
 var express = require('express');
 var router = express.Router();
 var User = require('../models/User');
+var jwt = require('jsonwebtoken');
+var VerifyToken = require('../utils/VerifyToken');
 
 router.get('/find', function (req, res, next) {
     User.find(req.query).exec(function (err, users) {
@@ -21,19 +23,19 @@ router.get('/last-updated/:id',function (req, res, next) {
 });
 
 router.post('/register-school', function (req, res, next) {
-    saveUser(req.body.userName, req.body.password, 'school', req.body.name, req.body.phone, req.body.address, req.body.picture, function (result) {
+    saveUser(req.body.email, req.body.password, 'school', req.body.name, req.body.phone, req.body.address, req.body.picture, function (result) {
         res.json(result)
     });
 });
 
 router.post('/register-instructor', function (req, res, next) {
-    saveUser(req.body.userName, req.body.password, 'instructor', req.body.name, req.body.phone, req.body.address, req.body.picture, function (result) {
+    saveUser(req.body.email, req.body.password, 'instructor', req.body.name, req.body.phone, req.body.address, req.body.picture, function (result) {
         res.json(result)
     });
 });
 
 router.post('/register-driver', function (req, res, next) {
-    saveUser(req.body.userName, req.body.password, 'driver', req.body.name, req.body.phone, req.body.address, req.body.picture, function (result) {
+    saveUser(req.body.email, req.body.password, 'driver', req.body.name, req.body.phone, req.body.address, req.body.picture, function (result) {
         res.json(result)
     });
 });
@@ -50,10 +52,27 @@ router.post('/assign-instructor', function (req, res, next) {
     })
 });
 
+router.post('/login',function (req, res, next) {
+    User.findOne({email:req.body.email},function (err, user) {
+        if(err || !user){
+            return res.json({success:false, msg:"Could not find the user",error:err})
+        }
+        user.comparePassword(req.body.password,function (err, isMatch, token) {
+            if(isMatch && !err){
+                return res.json({success:true,msg:"Authentication completed",token:token});
+            }
+            return res.json({success:false,msg:"Incorrect password",error:err});
+        })
+    });
+});
 
-function saveUser(userName, password, role, name, phone, address, picture, callback) {
+// router.get('/details',VerifyToken.school,function (req, res, next) {
+//    res.json({details:"Here are some new details"});
+// });
+
+function saveUser(email, password, role, name, phone, address, picture, callback) {
     var newUser = new User({
-        userName: userName,
+        email: email,
         password: password,
         role: role,
         name: name,

@@ -1,9 +1,11 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var bcrypt = require('bcrypt');
+var jwt = require('jsonwebtoken');
+var config = require('../utils/config');
 
 var UserSchema = new Schema({
-    userName: {
+    email: {
         type : String,
         required: true,
         unique: true
@@ -55,11 +57,19 @@ UserSchema.pre('save',function (next) {
 });
 
 UserSchema.methods.comparePassword = function (password, callback) {
-    bcrypt.comapare(password,this.password,function (err, isMatch) {
+    console.log({id:this._id,role:this.role});
+    var id = this.id;
+    var role = this.role;
+    bcrypt.compare(password,this.password,function (err, isMatch) {
         if(err){
-            return callbacke(err);
+            return callback(err);
         }
-        callback(null,isMatch);
+        if(isMatch){
+            console.log({id:id,role:role});
+            var token = jwt.sign({id:id,role:role}, config.secret,{expiresIn:config.tokenExpire});
+            return callback(null,isMatch,token);
+        }
+        return callback(err,isMatch);
     })
 };
 
