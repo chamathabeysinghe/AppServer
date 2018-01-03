@@ -10,6 +10,7 @@ function verifyUser(req, res, next) {
             return res.status(500).send({auth: false, message: 'Failed to authenticate token.'});
         // if everything good, save to request for use in other routes
         req.userId = decoded.id;
+        req.userRole = decoded.role;
         next();
     });
 }
@@ -23,6 +24,7 @@ function verifyInstructor(req, res, next) {
             return res.status(500).send({auth: false, message: 'Failed to authenticate token.'});
         // if everything good, save to request for use in other routes
         req.userId = decoded.id;
+        req.userRole = decoded.role;
         next();
     });
 }
@@ -36,6 +38,7 @@ function verifyDriver(req, res, next) {
             return res.status(500).send({auth: false, message: 'Failed to authenticate token.'});
         // if everything good, save to request for use in other routes
         req.userId = decoded.id;
+        req.userRole = decoded.role;
         next();
     });
 }
@@ -49,8 +52,29 @@ function verifySchool(req, res, next) {
             return res.status(500).send({auth: false, message: 'Failed to authenticate token.'});
         // if everything good, save to request for use in other routes
         req.userId = decoded.id;
+        req.userRole = decoded.role;
         next();
     });
 }
 
-module.exports = {user: verifyUser,school:verifySchool,driver:verifyDriver,instructor:verifyInstructor};
+function verifyAdmin(req, res, next) {
+    var token = req.headers['x-access-token'];
+    if (!token)
+        return res.status(403).send({auth: false, message: 'No token provided.'});
+    jwt.verify(token, config.secret, function (err, decoded) {
+        if (err || decoded.role != 'admin')
+            return res.status(500).send({auth: false, message: 'Failed to authenticate token.'});
+        // if everything good, save to request for use in other routes
+        req.userId = decoded.id;
+        req.userRole = decoded.role;
+        next();
+    });
+}
+
+module.exports = {
+    user: verifyUser,
+    school: verifySchool,
+    driver: verifyDriver,
+    instructor: verifyInstructor,
+    admin: verifyAdmin
+};

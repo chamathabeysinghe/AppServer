@@ -19,7 +19,8 @@ var UserSchema = new Schema({
         required: true
     },
     name: {
-        type: String
+        type: String,
+        required:true
     },
     phone: {
         type: Number
@@ -41,7 +42,8 @@ var UserSchema = new Schema({
     lastUpdate: {
         type: Date,
         default: Date.now
-    }
+    },
+    learnKits: [{type:Schema.Types.ObjectId,ref: 'LearnKit'}]
 });
 
 UserSchema.pre('save',function (next) {
@@ -74,5 +76,3 @@ UserSchema.methods.comparePassword = function (password, callback) {
 };
 
 module.exports = mongoose.model('User',UserSchema);
-
-
