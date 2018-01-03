@@ -12,7 +12,17 @@ router.get('/find', function (req, res, next) {
         res.json(users)
     });
 });
+router.get('/find-school',function (req, res, next) {
+    filter = req.query;
+    filter['role'] = 'school';
+    User.find(filter).exec(function (err, schools) {
+        if(err){
+            return res.json({success:false,error:err});
+        }
+        res.json(schools);
 
+    })
+});
 router.get('/last-updated/:id',function (req, res, next) {
     User.findById(req.params.id,function (err, user) {
         if(err){
@@ -55,12 +65,14 @@ router.post('/assign-instructor', function (req, res, next) {
 router.post('/login',function (req, res, next) {
     User.findOne({email:req.body.email},function (err, user) {
         if(err || !user){
+            res.status(401);
             return res.json({success:false, msg:"Could not find the user",error:err})
         }
         user.comparePassword(req.body.password,function (err, isMatch, token) {
             if(isMatch && !err){
                 return res.json({success:true,msg:"Authentication completed",token:token});
             }
+            res.status(401);
             return res.json({success:false,msg:"Incorrect password",error:err});
         })
     });
@@ -111,6 +123,4 @@ function assignUserToSchool(userId, schoolId, callback) {
     });
 }
 
-
 module.exports = router;
-

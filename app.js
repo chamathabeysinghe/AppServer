@@ -10,7 +10,7 @@ var index = require('./routes/index');
 var users = require('./routes/users');
 var sessions = require('./routes/sessions');
 
-mongoose.connect("mongodb://localhost:27017/test");
+mongoose.connect("mongodb://localhost:27017/learners");
 
 var db = mongoose.connection;
 db.once('open',function () {
