@@ -12,6 +12,7 @@ router.get('/find', function (req, res, next) {
         res.json(users)
     });
 });
+
 router.get('/find-school',function (req, res, next) {
     filter = req.query;
     filter['role'] = 'school';
@@ -23,6 +24,7 @@ router.get('/find-school',function (req, res, next) {
 
     })
 });
+
 router.get('/last-updated/:id',function (req, res, next) {
     User.findById(req.params.id,function (err, user) {
         if(err){

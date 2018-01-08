@@ -9,6 +9,7 @@ var mongoose = require('mongoose');
 var index = require('./routes/index');
 var users = require('./routes/users');
 var sessions = require('./routes/sessions');
+var learnkit = require('./routes/learn-kit');
 
 mongoose.connect("mongodb://localhost:27017/learners");
 
@@ -34,7 +35,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', index);
 app.use('/users', users);
 app.use('/sessions',sessions);
-
+app.use('/learnkit',learnkit);
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
     var err = new Error('Not Found');
