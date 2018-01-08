@@ -1,0 +1,208 @@
+<div class="row" id="main-app">
+    <div class="panel panel-white">
+        <div class="panel-heading clearfix">
+            <h4 class="panel-title">Available Learn Kits</h4>
+        </div>
+        <div class="panel-body">
+            <div class="table-responsive">
+                <div class="dataTables_wrapper">
+
+                    <table id="learnKitTable" class="display table dataTable" style="width: 100%;" role="grid"
+                           aria-describedby="example_info">
+                        <thead>
+                        <tr role="row">
+                            <th class="sorting_asc" tabindex="0" aria-controls="learnKitTable" rowspan="1"
+                                colspan="1" aria-sort="ascending"
+                                aria-label="Name: activate to sort column descending"
+                                style="width: 198px;">Serial
+                            </th>
+                            <th class="sorting" tabindex="0" aria-controls="learnKitTable" rowspan="1"
+                                colspan="1" aria-label="Email: activate to sort column ascending"
+                                style="width: 291px;">Status
+                            </th>
+                            <th class="sorting" tabindex="0" aria-controls="learnKitTable" rowspan="1"
+                                colspan="1" aria-label="Phone: activate to sort column ascending"
+                                style="width: 142px;">School
+                            </th>
+                            <th class="sorting" tabindex="0" aria-controls="learnKitTable" rowspan="1"
+                                colspan="1" aria-label="Address: activate to sort column ascending"
+                                style="width: 48px;">Last Update
+                            </th>
+                        </tr>
+                        </thead>
+                        <tfoot>
+                        <tr>
+                            <th rowspan="1" colspan="1">Serial</th>
+                            <th rowspan="1" colspan="1">Status</th>
+                            <th rowspan="1" colspan="1">School</th>
+                            <th rowspan="1" colspan="1">Last Update</th>
+                        </tr>
+                        </tfoot>
+                        <tbody>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row" id="new-kit-app">
+    <div class="panel panel-white">
+        <div class="panel-heading clearfix">
+            <h4 class="panel-title">New Learn Kit</h4>
+        </div>
+        <div class="panel-body">
+            <p>Modals have large optional size, available by adding <code>.modal-lg</code> class on a <code>.modal-dialog</code>.</p>
+
+            <button type="button" class="btn btn-info" data-toggle="modal" data-target=".new-kit-modal-lg" v-on:click="initModal">Add New Kit</button>
+
+            <div id="newKitModal" class="modal fade new-kit-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" style="display: none;">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                            <h4 class="modal-title" id="myLargeModalLabel">New Kit</h4>
+                        </div>
+
+
+                        <div class="modal-body">
+                            <div v-if="invalid" class="row">
+                                <div class="col-sm-12">
+                                    <div class="alert alert-danger" role="alert" style="margin-bottom:0;">
+                                        <strong>Oh snap!</strong> <a href="#" class="alert-link">Change a few things up</a> and try submitting again.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <h3>Raspberry Pi Learn Kit</h3>
+                                <img src="http://www.storagereview.com/images/StorageReview-NComputing-RX300(1).jpg" style="width: 100%;height: 50%">
+                                <p>Nullam quis risus eget urna mollis ornare vel eu leo. Cum sociis natoque penatibus et nunc, blandit vel, luctus pulvinar, hendrerit id, lorem. Maecenas nec odio et ante tincidunt tempus.</p>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="panel panel-white">
+                                    <div class="panel-heading clearfix">
+                                        <h4 class="panel-title">Registration</h4>
+                                    </div>
+                                    <div class="panel-body">
+                                        <form>
+                                            <div class="form-group" v-bind:class="{ 'has-error': invalid }">
+                                                <label for="serialNumber">Serial Number</label>
+                                                <input type="text" class="form-control" id="serialNumber" placeholder="Serial Number" v-model="serialNumber">
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary" v-on:click="submitForm">Register</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="../../assets/plugins/jquery-validation/jquery.validate.min.js"></script>
+<script src="../../assets/plugins/bootstrap-wizard/jquery.bootstrap.wizard.min.js"></script>
+<script src="../../assets/js/pages/form-wizard.js"></script>
+<script>
+
+    var dataSet = [];
+    var dataTable = null;
+    $(document).ready(function() {
+        dataTable = $('#learnKitTable').dataTable( {
+            data: dataSet
+        } );
+        tableApp.drawTable();
+        $('.date-picker').datepicker({
+            orientation: "top auto",
+            autoclose: true
+        });
+    });
+    var instance = axios.create({
+        headers: {'x-access-token': localStorage.getItem('token')}
+    });
+
+
+    var tableApp = new Vue({
+        el: '#main-tableApp',
+        data: {
+            learnKits: []
+        },
+        methods: {
+            updateTable: function (callback) {
+                instance.get('/learnkit/find').then(function (response) {
+                    tableApp.learnKits=response.data;
+                    callback()
+                });
+            },
+            drawTable: function () {
+                this.updateTable(function () {
+                    dataSet = tableApp.getArray(tableApp.learnKits);
+                    //Check if callback required for now working fine
+                    dataTable.fnClearTable();
+                    dataTable.fnAddData(dataSet);
+                });
+
+            },
+            getArray: function(dict,callback){
+                var dataSet = [];
+                for(i=0;i<dict.length;i++){
+                    var row = [];
+                    row.push(dict[i].serial);
+                    row.push(dict[i].status);
+                    if(dict[i]._school!=null){
+                        row.push(dict[i]._school.name);
+                    } else {
+                        row.push("Not Assigned")
+                    }
+
+                    row.push(dict[i].status);
+                    dataSet.push(row);
+                }
+                return dataSet;
+            }
+        }
+    })
+
+    var newKitApp = new Vue({
+        el: '#new-kit-app',
+        data: {
+            modalShown: false,
+            serialNumber: '',
+            modalPage: 0,
+            invalid:false
+        },
+        methods: {
+            submitForm: function (event) {
+                formData = {serial:this.serialNumber};
+                instance.post('/learnkit/register-learnkit',formData).then(function (response) {
+                    if(response.data.success){
+                        newKitApp.serialNumber = "";
+                        tableApp.drawTable();
+                        $('#newKitModal').modal('toggle');
+                        newKitApp.invalid = false;
+                    }
+                    else{
+                        console.log(response.data)
+//                        $('#serialNumber').parent().addClass('has-error')
+                        newKitApp.invalid = true;
+                    }
+                })
+
+            },
+            initModal: function (event) {
+                this.serialNumber ='';
+                this.invalid = false;
+            }
+        }
+    })
+</script>

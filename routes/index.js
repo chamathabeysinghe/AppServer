@@ -11,6 +11,9 @@ router.get('/login', function (req, res, next) {
 });
 
 router.get('/dashboard', function (req, res, next) {
-    res.render('dashboard');
+    res.render('dashboard',{title:'School',type:1});
+});
+router.get('/dashboard/learnkit',function (req, res, next) {
+    res.render('dashboard',{title:'Learn kits',type:'LearnKit'})
 });
 module.exports = router;
