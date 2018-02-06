@@ -95,7 +95,12 @@
                     .then(function (response) {
                         console.log(response.data);
                         localStorage.setItem('token',response.data.token);
-                        window.location.href = 'dashboard'
+                        if(response.data.role=='school'){
+                            window.location.href = 'school_dashboard'
+                        }
+                        else{
+                            window.location.href = 'dashboard'
+                        }
                     })
                     .catch(function (error) {
                         console.log(error);
