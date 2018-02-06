@@ -62,14 +62,15 @@ UserSchema.methods.comparePassword = function (password, callback) {
     console.log({id:this._id,role:this.role});
     var id = this.id;
     var role = this.role;
+    var thisUser = this;
     bcrypt.compare(password,this.password,function (err, isMatch) {
         if(err){
             return callback(err);
         }
         if(isMatch){
             console.log({id:id,role:role});
-            var token = jwt.sign({id:id,role:role}, config.secret,{expiresIn:config.tokenExpire});
-            return callback(null,isMatch,token);
+            var token = jwt.sign({id:id,role:role,user:thisUser}, config.secret,{expiresIn:config.tokenExpire});
+            return callback(null,isMatch,token,role);
         }
         return callback(err,isMatch);
     })
