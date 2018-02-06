@@ -21,6 +21,27 @@ app.set('port', port);
 
 var server = http.createServer(app);
 
+var socketSessions = require('../utils/SocketSession');
+socketSessions.init(server);
+
+// var io = require('socket.io')(server);
+// require('socketio-auth')(io, {
+//     authenticate: function (socket, data, callback) {
+//         //get credentials sent by the client
+//         // var username = data.username;
+//         // var password = data.password;
+//         var jwtToken = data.token;
+//         return callback(null,true);
+//     },
+//     postAuthenticate:function (socket, data) {
+//         console.log("################################################################Authenticated");
+//     }
+// });
+// io.on('connection',function (socket) {
+//     console.log("******************************************************************************************Client Connected");
+//
+// });
+
 /**
  * Listen on provided port, on all network interfaces.
  */

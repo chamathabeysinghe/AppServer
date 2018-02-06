@@ -7,7 +7,7 @@
             <div class="table-responsive">
                 <div id="example_wrapper" class="dataTables_wrapper">
 
-                    <table id="example" class="display table dataTable" style="width: 100%;" role="grid"
+                    <table id="schoolsTable" class="display table dataTable" style="width: 100%;" role="grid"
                            aria-describedby="example_info">
                         <thead>
                         <tr role="row">
@@ -44,13 +44,7 @@
                         </tr>
                         </tfoot>
                         <tbody>
-                        <tr role="row" class="odd" v-for="school in schools">
-                            <td class="sorting_1"> {{school.name}}</td>
-                            <td>{{school.email}}</td>
-                            <td>{{school.phone}}</td>
-                            <td>{{school.address}}</td>
-                            <td>{{school.enable == true ? 'Enabled':'Disabled'}}</td>
-                        </tr>
+
                         </tbody>
                     </table>
                 </div>
@@ -58,10 +52,19 @@
         </div>
     </div>
 </div>
+<a class="btn btn-danger" href="/dashboard/school/new-school">New School</a>
 
 <script>
+
+    var dataSet = [];
+    var dataTable = null;
+
     $(document).ready(function() {
-        $('#example').dataTable();
+        dataTable = $('#schoolsTable').dataTable({
+            data: dataSet
+        });
+        schoolApp.drawTable();
+
         $('.date-picker').datepicker({
             orientation: "top auto",
             autoclose: true
@@ -70,20 +73,45 @@
     var instance = axios.create({
         headers: {'x-access-token': localStorage.getItem('token')}
     });
-    var app = new Vue({
+    var schoolApp = new Vue({
         el: '#main-app',
         data: {
             schools: []
         },
         methods: {
-            updateTable: function () {
+            updateTable: function (callback) {
                 instance.get('/users/find-school').then(function (response) {
-                    app.schools = response.data;
+                    schoolApp.schools=response.data;
+                    callback()
                 });
+            },
+            drawTable: function () {
+                this.updateTable(function () {
+                    dataSet = schoolApp.getArray(schoolApp.schools);
+                    console.log(dataSet)
+                    //Check if callback required for now working fine
+                    dataTable.fnClearTable();
+                    dataTable.fnAddData(dataSet);
+                });
+
+            },
+            getArray: function(dict,callback){
+                var dataSet = [];
+                for(i=0;i<dict.length;i++){
+                    var row = [];
+                    row.push(dict[i].name);
+                    row.push(dict[i].email);
+                    row.push(dict[i].phone);
+                    row.push(dict[i].address);
+                    if(dict[i].enable){
+                        row.push("Enable");
+                    } else {
+                        row.push("Disable");
+                    }
+                    dataSet.push(row);
+                }
+                return dataSet;
             }
-        },
-        beforeMount: function() {
-            this.updateTable();
         }
     })
 </script>
