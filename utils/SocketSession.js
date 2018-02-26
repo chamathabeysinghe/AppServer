@@ -4,16 +4,13 @@ var jwt = require('jsonwebtoken');
 var config = require("../utils/config");
 
 var sessions = {};
+var learnKitLocations = {};
 
 function init(server){
     var io = socketio(server);
     module.exports['io'] = io;
     socketio_auth(io,{
         authenticate: function (socket, data, callback) {
-            //get credentials sent by the client
-            // var username = data.username;
-            // var password = data.password;
-            // var jwtToken = data.token;
             var token = data.token;
             if(!token)
                 return callback(null,false);
@@ -26,7 +23,6 @@ function init(server){
             });
         },
         postAuthenticate:function (socket, data) {
-            console.log("################################################################Authenticated");
             var user = socket.client.user;
 
             if(!sessions[user.id]){
@@ -44,11 +40,11 @@ function init(server){
         }
     });
     io.on('connection',function (socket) {
-        console.log("******************************************************************************************Fucking Client Connected");
     });
 }
 
 module.exports = {
     init:init,
     sessions:sessions,
+    learnKitLocations:learnKitLocations
 };
