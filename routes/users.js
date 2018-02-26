@@ -5,6 +5,9 @@ var jwt = require('jsonwebtoken');
 var VerifyToken = require('../utils/VerifyToken');
 var LearnKit = require('../models/LearnKit');
 var SocketSessions = require('../utils/SocketSession');
+var mobile = require('./mobile');
+
+router.use('/mobile',mobile);
 
 router.get('/find', function (req, res, next) {
     User.find(req.query).exec(function (err, users) {
@@ -104,38 +107,6 @@ router.post('/login', function (req, res, next) {
         })
     });
 });
-
-/**
- * This is very important keep in mind
- */
-router.get('/test-sockets',function (req, res, next) {
-    var sessions = SocketSessions.sessions;
-    for(var key in sessions){
-        console.log(key+"   "+sessions[key]);
-        sessionIds = sessions[key];
-        for(var i=0;i<sessionIds.length;i+=1){
-            console.log(sessionIds[i]);
-            var socket = (SocketSessions.io.sockets.sockets[sessionIds[i]]);
-            socket.emit('update',"FICKKK LICKKK")
-        }
-
-    }
-});
-
-router.post('update-location',function (req, res, next) {
-    var schoolId = req.body.schoolId;
-    var locationInfo = req.body.locationInfo;
-    sendLocationInfoToSchool(schoolId,locationInfo);
-    return res.json({status:'success'})
-});
-
-function sendLocationInfoToSchool(schoolId,locationInfo){
-    schoolSocketIds = SocketSessions.sessions[schoolId];
-    for(var i=0;i<schoolSocketIds.length;i+=1){
-        var socket = SocketSessions.io.sockets.sockets[schoolSocketIds[i]];
-        socket.emit('locationUpdate',locationInfo);
-    }
-}
 
 router.get('/school-summary',VerifyToken.school,function (req, res, next) {
     var sampleSummary = {
