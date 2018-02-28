@@ -1,27 +1,39 @@
-<div class="page-title">
-    <h3 class="breadcrumb-header"><%= title %></h3>
-</div>
-<div class="page-inner full-page" id="school-summary-app">
 
-    <div id="map-canvas"> </div>
-    <div id="legend" style="position: absolute;z-index: 10;">
-        <h3>School Details</h3>
-            <div class="panel panel-white">
-                <div class="panel-heading clearfix">
-                    <h4 class="panel-title">Projects</h4>
-                </div>
-                <div class="panel-body">
-                    <div class="project-stats">
-                        <ul class="list-unstyled">
-                            <li>Total Trainees<span class="label label-success pull-right">{{totalTrainees}}</span></li>
-                            <li>Total Vehicles<span class="label label-success pull-right">{{totalVehicles}}</span></li>
-                            <li>Current Sessions<span class="label label-danger pull-right">{{currentSessions}}</span></li>
+<div class="page-inner" id="school-summary-app">
+    <div class="page-title">
+        <div class="row">
+            <h3 class="breadcrumb-header"><%= schoolName %></h3>
+        </div>
 
-                        </ul>
+    </div>
+    <div class="row">
+
+        <div class="col-lg-10">
+
+            <div id="map-canvas"  style="width: 100%; height: 700px; max-width: none"> </div>
+        </div>
+
+        <div class="col-lg-2">
+            <div id="legend" style="width: 250px; max-width: none">
+                <h3>School Details</h3>
+                <div class="panel panel-white">
+                    <div class="panel-body">
+                        <div class="project-stats">
+                            <ul class="list-unstyled">
+                                <li>Total Trainees<span class="label label-success pull-right">{{totalTrainees}}</span></li>
+                                <li>Total Vehicles<span class="label label-success pull-right">{{totalVehicles}}</span></li>
+                                <li>Current Sessions<span class="label label-danger pull-right">{{currentSessions}}</span></li>
+
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>
-    </div>
+            <div style="margin-top: 30%">
+                <img style="width: 250px; height: auto;" src="https://marketplace.canva.com/MAB00nUIULE/1/0/thumbnail_large/canva-nutcracker-holiday-sale-advertising-poster-MAB00nUIULE.jpg">
+            </div>
+        </div>
+
 </div>
 
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCzjeZ1lORVesmjaaFu0EbYeTw84t1_nek"></script>
@@ -34,7 +46,6 @@
 
         function initialize() {
             var mapOptions = {
-//                6.794934, 79.900564
                 center: new google.maps.LatLng(6.794934, 79.900564,6),
                 zoom: 17
             };
@@ -63,7 +74,8 @@
             totalTrainees:0,
             totalVehicles:0,
             currentSessions:0,
-            markers:[]
+            markers:[],
+            infoWindow:[]
         },
         methods:{
             loadSummary:function (map) {
@@ -73,21 +85,53 @@
                     schoolSummaryApp.totalVehicles = response.data.totalVehicles;
                     schoolSummaryApp.currentSessions = response.data.currentSessions;
                     mapLocations = response.data.mapInfo;
+                    console.log(mapLocations)
                     for(var i=0;i<mapLocations.length;i+=1){
                         var location = {lat:mapLocations[i].latitude,lng:mapLocations[i].longitude}
-                        var contentString = '<div class="panel panel-white stats-widget"><div class="panel-body"><div class="pull-left"><span class="stats-number">58%</span><p class="stats-info">Finished Tasks</p></div><div class="pull-right"><i class="icon-arrow_upward stats-icon"></i></div></div></div>'
-                        var infowindow = new google.maps.InfoWindow({
-                            content: contentString
-                        });
+
+                        var instructor = mapLocations[i].instructor;
+                        var trainee = mapLocations[i].trainee;
+
+                        var contentString = '<div class="col-lg-12">\n' +
+                            '                            <div class="panel panel-white" style="border-color: white">\n' +
+                            '                                <div class="panel-heading clearfix">\n' +
+                            '                                    <h4 class="panel-title">Suggestions</h4>\n' +
+                            '                                </div>\n' +
+                            '                                <div class="panel-body">\n' +
+                            '                                    <div class="team">\n' +
+                            '                                        <div class="team-member">\n' +
+                            '                                           <div class="online on"></div>\n' +
+                            '                                            <img src="'+instructor.image+'" alt="">\n' +
+                            '                                        </div>\n' +
+                            '                                        <div class="team-member">\n' +
+                            '                                           <div class="online on"></div>\n' +
+                            '                                            <img src="'+trainee.image+'" alt="">\n' +
+                            '                                        </div>\n' +
+                            '                                    </div>\n' +
+                            '                                </div>\n' +
+                            '                                <div class="panel-body">\n' +
+                            '                                    <p>Session Start Time : '+mapLocations[i].session.startTime+'</p>\n' +
+                            '                                    <p>Instructor : '+instructor.name+'</p>\n' +
+                            '                                    <p>Trainee : '+trainee.name+'</p>\n' +
+                            '                                </div>\n' +
+                            '                            </div>\n';
+                        var infoWindow = new google.maps.InfoWindow();
+
+                        schoolSummaryApp.infoWindow.push(infoWindow)
                         var marker = new google.maps.Marker({
                             position: location,
                             map:map
                         })
 
-                        marker.addListener('click', function() {
-                            infowindow.open(map, marker);
-
-                        });
+                        google.maps.event.addListener(marker,'click', (function(marker,content,infowindow){
+                            return function() {
+                                for( j=0;j<schoolSummaryApp.infoWindow.length;j++){
+                                    schoolSummaryApp.infoWindow[j].close();
+                                }
+                                infowindow.setContent(content);
+                                infowindow.open(map,marker);
+                            };
+                        })(marker,contentString,infoWindow));
 
                         schoolSummaryApp.markers.push(marker);
                     }

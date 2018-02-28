@@ -20,6 +20,9 @@ router.get('/dashboard/school/new-school',function (req, res, next) {
     res.render('dashboard',{title:'New School',type: 'NewSchool'});
 });
 router.get('/school_dashboard',function (req, res, next) {
-    res.render('school-dashboard',{title:'My School',type:'summary'})
+    res.render('school-dashboard',{title:'My School',schoolName:'Learn Drive',type:'summary'})
+});
+router.get('/trainees',function (req, res, next) {
+    res.render('school-dashboard',{title:'Trainees',type:'trainees'})
 });
 module.exports = router;

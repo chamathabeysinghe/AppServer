@@ -122,12 +122,12 @@ router.get('/school-summary',VerifyToken.school,function (req, res, next) {
                 instructor:{
                     id:'#543',
                     name:'Kapila Dissanayake',
-                    image:'/images/src/kapila_dissanayake.jpg'
+                    image:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSxM0wx1_G-hG22LyOaqD9IKRkzuJ_sov5WCacMwPxOOfBzmscD'
                 },
                 trainee:{
                     id:'#4321',
                     name:'Kalum Lakmal',
-                    image: 'images/src/na.jpg'
+                    image: 'https://i1.wp.com/www.vervemagazine.in/wp-content/uploads/2014/01/John-Abraham-1.jpg'
                 },
                 session:{
                     startTime: '1517805831',
@@ -145,12 +145,12 @@ router.get('/school-summary',VerifyToken.school,function (req, res, next) {
                 instructor:{
                     id:'#543',
                     name:'Kapila Dissanayake',
-                    image:'/images/src/kapila_dissanayake.jpg'
+                    image:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSxM0wx1_G-hG22LyOaqD9IKRkzuJ_sov5WCacMwPxOOfBzmscD'
                 },
                 trainee:{
                     id:'#4321',
                     name:'Kalum Lakmal',
-                    image: 'images/src/na.jpg'
+                    image: 'https://i1.wp.com/www.vervemagazine.in/wp-content/uploads/2014/01/John-Abraham-1.jpg'
                 },
                 session:{
                     startTime: '1517805831',
@@ -168,12 +168,12 @@ router.get('/school-summary',VerifyToken.school,function (req, res, next) {
                 instructor:{
                     id:'#543',
                     name:'Kapila Dissanayake',
-                    image:'/images/src/kapila_dissanayake.jpg'
+                    image:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSxM0wx1_G-hG22LyOaqD9IKRkzuJ_sov5WCacMwPxOOfBzmscD'
                 },
                 trainee:{
                     id:'#4321',
                     name:'Kalum Lakmal',
-                    image: 'images/src/na.jpg'
+                    image: 'https://i1.wp.com/www.vervemagazine.in/wp-content/uploads/2014/01/John-Abraham-1.jpg'
                 },
                 session:{
                     startTime: '1517805831',

@@ -55,9 +55,61 @@ router.get('/get-session-details/:id',function (req, res, next) {
        },
        errors : [{type:'high-speed',location:(6.811294, 79.884334), details:'Speed Limit is 40kmph but drove at 50kmph'}
        ,{type:'cross-line',location:(6.811294, 79.884334), details:'Speed Limit is 40kmph but drove at 50kmph'}]
-   }
-
+   };
    return res.json(sessionDetails);
+});
+
+router.get('/goal-details',function (req, res, next) {
+    var goalDetails = [
+        {
+            title: 'Drive 100KMs',
+            category: 'drive',
+            progress: 75
+        },
+        {
+            title: 'Train reverse',
+            category: 'reverse',
+            progress: 12
+        },
+        {
+            title: 'Overtake vehicles',
+            category: 'overtake',
+            progress: 25
+        },
+        {
+            title: 'Drive 100KMs',
+            category: 'drive',
+            progress: 75
+        },
+        {
+            title: 'Train reverse',
+            category: 'reverse',
+            progress: 12
+        },
+        {
+            title: 'Overtake vehicles',
+            category: 'overtake',
+            progress: 25
+        },
+        {
+            title: 'Drive 100KMs',
+            category: 'drive',
+            progress: 75
+        },
+        {
+            title: 'Train reverse',
+            category: 'reverse',
+            progress: 12
+        },
+        {
+            title: 'Overtake vehicles',
+            category: 'overtake',
+            progress: 25
+        },
+
+    ];
+
+    return res.json(goalDetails);
 });
 
 module.exports = router;
