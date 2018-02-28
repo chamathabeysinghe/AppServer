@@ -2,18 +2,18 @@
 <html lang="en">
 <head>
     <% include partials/style.ejs %>
-    <title>Space - Responsive Admin Dashboard Template</title>
+    <title><%=title%></title>
     <% include partials/scripts.ejs %>
     <style>
         #legend {
             font-family: Arial, sans-serif;
             background: #fff;
-            padding: 10px;
+            /*padding: 10px;*/
             width: 20%;
             margin-top: 10%;
-            position: absolute;
-            z-index: 10;
-            opacity:0.9;
+            /*position: absolute;*/
+            /*z-index: 10;*/
+            /*opacity:0.9;*/
         }
         #legend h3 {
             margin-top: 0;
@@ -30,11 +30,15 @@
     <% include partials/sidebar.ejs %>
 
     <div class="page-content">
-
         <% include partials/dashboard-header.ejs %>
 
+        <% if(type=='summary'){%>
         <% include school-dashboard/summary.ejs%>
+        <%} else if(type=='trainees'){%>
+        <% include school-dashboard/trainees.ejs%>
+        <%}%>
 
+        <% include partials/dashboard-footer.ejs %>
     </div>
 </div>
 
